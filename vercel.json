@@ -1,0 +1,17 @@
+{
+  "devCommand": "vite --port $PORT",
+  "rewrites": [
+    {
+      "source": "/api/marketcheck/search",
+      "destination": "/api/marketcheck/search"
+    },
+    {
+      "source": "/api/marketcheck/predict",
+      "destination": "/api/marketcheck/predict"
+    },
+    {
+      "source": "/((?!api/|@)[^.]*)",
+      "destination": "/index.html"
+    }
+  ]
+}

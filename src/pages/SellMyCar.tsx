@@ -1,0 +1,678 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, ExternalLink, ArrowUpDown, RefreshCw, ShieldCheck, AlertCircle, Tag, Clock } from 'lucide-react';
+// @ts-ignore
+import heroVehicle from '../assets/hero-vehicle.png';
+// @ts-ignore
+import logoMark from '../assets/logo-mark.png';
+
+interface SellMyCarProps {}
+
+interface BuyerInfo {
+  id: string;
+  name: string;
+  description: string;
+  pills: string[];
+  baseUrl: string;
+  vinSupport: boolean;
+}
+
+const BUYERS: BuyerInfo[] = [
+  {
+    id: 'carvana',
+    name: 'Carvana',
+    description: 'Get a real, guaranteed offer in 2 minutes.',
+    pills: ['100% Online', 'Home Pickup', '7-Day Offer'],
+    baseUrl: 'https://www.carvana.com/sell-my-car',
+    vinSupport: true
+  },
+  {
+    id: 'carmax',
+    name: 'CarMax',
+    description: 'Bring it in or get an offer online.',
+    pills: ['In-Person Option', 'Guaranteed Offer', '7-Day Offer'],
+    baseUrl: 'https://www.carmax.com/sell-my-car',
+    vinSupport: false
+  },
+  {
+    id: 'kbb',
+    name: 'KBB Instant Cash Offer',
+    description: 'Instant cash offer redeemable at local dealers.',
+    pills: ['Local Dealers', 'Kelley Blue Book Valuation', 'Quick Check'],
+    baseUrl: 'https://www.kbb.com/sell-my-car/',
+    vinSupport: true
+  },
+  {
+    id: 'cargurus',
+    name: 'CarGurus',
+    description: 'Compare offers from multiple dealer networks.',
+    pills: ['Top Dealer Bids', 'Free Pickup', 'Fast Payment'],
+    baseUrl: 'https://www.cargurus.com/Cars/instant-max-cash-offer.html',
+    vinSupport: false
+  },
+  {
+    id: 'peddle',
+    name: 'Peddle',
+    description: 'Instant offers for cars in any condition.',
+    pills: ['Any Condition', 'Nationwide Pickup', 'Cash on Spot'],
+    baseUrl: 'https://www.peddle.com/',
+    vinSupport: false
+  },
+  {
+    id: 'vroom',
+    name: 'Vroom',
+    description: 'Free pickup and direct payment.',
+    pills: ['Free Home Pickup', '7-Day Offer', 'Secure Pay'],
+    baseUrl: 'https://www.vroom.com/sell-my-car',
+    vinSupport: true
+  },
+  {
+    id: 'bidbus',
+    name: 'BidBus',
+    description: 'Live dealer auctions · Available in CA and TX',
+    pills: ['Dealer competition', 'Live auction', 'CA & TX only'],
+    baseUrl: 'https://www.bidbus.com/',
+    vinSupport: false
+  },
+  {
+    id: 'autonation',
+    name: 'AutoNation',
+    description: "America's largest dealer group · 300+ locations",
+    pills: ['Instant offer', '300+ locations', 'Same-day payment'],
+    baseUrl: 'https://www.autonation.com/sell-your-car',
+    vinSupport: true
+  }
+];
+
+const VEHICLE_MAKES = [
+  'Toyota',
+  'Honda',
+  'Ford',
+  'Chevrolet',
+  'Nissan',
+  'BMW',
+  'Mercedes-Benz',
+  'Lexus'
+];
+
+const VEHICLE_MODELS: Record<string, string[]> = {
+  'Toyota': ['RAV4', 'Camry', 'Prius', 'Tacoma', 'Highlander', 'Tundra'],
+  'Honda': ['Civic', 'Accord', 'CR-V', 'Pilot', 'Odyssey'],
+  'Ford': ['F-150', 'Mustang', 'Explorer', 'Escape', 'Focus'],
+  'Chevrolet': ['Silverado', 'Equinox', 'Malibu', 'Tahoe', 'Suburban'],
+  'Nissan': ['Altima', 'Rogue', 'Sentra', 'Pathfinder', 'Frontier'],
+  'BMW': ['3 Series', '5 Series', 'X3', 'X5'],
+  'Mercedes-Benz': ['C-Class', 'E-Class', 'GLC', 'GLE'],
+  'Lexus': ['RX', 'ES', 'NX', 'GX']
+};
+
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: currentYear - 1990 + 1 }, (_, i) => (currentYear - i).toString());
+
+const VEHICLE_IMAGE_URL = 'https://www.image2url.com/r2/default/images/1777076688091-58e09a91-5b3b-4dd7-b654-601a5c63f23f.png';
+
+const SellMyCar: React.FC<SellMyCarProps> = () => {
+  // Form State
+  const [vin, setVin] = useState('');
+  const [year, setYear] = useState('');
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [mileage, setMileage] = useState('');
+  const [condition, setCondition] = useState('');
+
+  // Hero Section Form State
+  const [heroTab, setHeroTab] = useState<'makeModel' | 'plateVin'>('makeModel');
+  
+  // Ref for scrolling to the buyer lineup section
+  const buyerGridRef = useRef<HTMLDivElement>(null);
+
+  const handleMakeChange = (selectedMake: string) => {
+    setMake(selectedMake);
+    setModel(''); // Reset model when make changes
+  };
+
+  // Offers State
+  const [offers, setOffers] = useState<Record<string, number>>({});
+
+  // Load offers on mount and when VIN changes
+  useEffect(() => {
+    const key = vin ? `carmeta_sell_offers_${vin.trim()}` : 'carmeta_sell_offers';
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        setOffers(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse saved offers', e);
+        setOffers({});
+      }
+    } else {
+      setOffers({});
+    }
+  }, [vin]);
+
+  // Persist offers to localStorage on change
+  const saveOffers = (newOffers: Record<string, number>) => {
+    setOffers(newOffers);
+    const key = vin ? `carmeta_sell_offers_${vin.trim()}` : 'carmeta_sell_offers';
+    localStorage.setItem(key, JSON.stringify(newOffers));
+  };
+
+  const handleOfferChange = (buyerId: string, value: string) => {
+    const numericValue = parseFloat(value.replace(/[^0-9.]/g, '')) || 0;
+    const updated = { ...offers, [buyerId]: numericValue };
+    saveOffers(updated);
+  };
+
+  // Pre-populate if there is a vehicle already stored in local context (e.g. from favorites or last viewed)
+  useEffect(() => {
+    const lastViewed = localStorage.getItem('carmeta_last_viewed_vehicle');
+    if (lastViewed) {
+      try {
+        const vehicle = JSON.parse(lastViewed);
+        if (vehicle.vin) setVin(vehicle.vin);
+        if (vehicle.year) setYear(vehicle.year.toString());
+        if (vehicle.make) setMake(vehicle.make);
+        if (vehicle.model) setModel(vehicle.model);
+        if (vehicle.mileage) setMileage(vehicle.mileage.toString());
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const handleReset = () => {
+    setVin('');
+    setYear('');
+    setMake('');
+    setModel('');
+    setMileage('');
+    setCondition('');
+    setOffers({});
+    localStorage.removeItem(vin ? `carmeta_sell_offers_${vin.trim()}` : 'carmeta_sell_offers');
+  };
+
+  // Helper to build deep links
+  const getBuyerUrl = (buyer: BuyerInfo): string => {
+    if (buyer.vinSupport && vin.trim()) {
+      const separator = buyer.baseUrl.includes('?') ? '&' : '?';
+      return `${buyer.baseUrl}${separator}vin=${encodeURIComponent(vin.trim().toUpperCase())}`;
+    }
+    return buyer.baseUrl;
+  };
+
+  const handleGetOffer = (buyer: BuyerInfo) => {
+    window.open(getBuyerUrl(buyer), '_blank');
+  };
+
+  const handleOpenAll = () => {
+    let blocked = false;
+    BUYERS.forEach((buyer) => {
+      try {
+        const newWin = window.open(getBuyerUrl(buyer), '_blank');
+        if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+          blocked = true;
+        }
+      } catch (e) {
+        blocked = true;
+      }
+    });
+    if (blocked) {
+      alert(`⚠️ Popups Blocked: Please click the popup blocker icon in your browser's address bar and select 'Always allow popups' to open all ${BUYERS.length} buyer sites simultaneously.`);
+    }
+  };
+
+  // Ranked offers calculation
+  const rankedOffers = (Object.entries(offers) as [string, number][])
+    .filter(([_, value]) => value > 0)
+    .map(([buyerId, val]) => {
+      const buyer = BUYERS.find((b) => b.id === buyerId);
+      return {
+        id: buyerId,
+        name: buyer ? buyer.name : buyerId,
+        value: val
+      };
+    })
+    .sort((a, b) => b.value - a.value);
+
+  const highestOffer = rankedOffers.length > 0 ? rankedOffers[0].value : 0;
+
+  return (
+    <div className="w-full font-sans animate-in fade-in duration-300">
+      {/* Full-width dark hero banner */}
+      <div className="bg-[#0A1929] w-full text-white py-12 md:py-20 overflow-hidden relative">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+          {/* Left Column: Headline, Trust Badges, Form */}
+          <div>
+            <h1 className="text-white font-bold text-5xl tracking-tight leading-tight flex flex-col">
+              <span>Sell your car for</span>
+              <span className="text-[#29abe2]">the best price</span>
+            </h1>
+            <p className="text-white/70 text-lg mt-3 font-medium">
+              Compare multiple offers in under 2 minutes.
+            </p>
+
+            {/* Trust Badges */}
+            <div className="flex flex-col sm:flex-row gap-6 mt-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
+                  <Tag size={18} className="text-[#29abe2]" />
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm">Best Offers</h4>
+                  <p className="text-white/60 text-xs mt-0.5">Compare top offers from trusted buyers</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
+                  <Clock size={18} className="text-[#29abe2]" />
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm">Fast & Easy</h4>
+                  <p className="text-white/60 text-xs mt-0.5">Get offers in under 2 minutes</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
+                  <ShieldCheck size={18} className="text-[#29abe2]" />
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm">Secure & Reliable</h4>
+                  <p className="text-white/60 text-xs mt-0.5">Safe, private, and hassle-free</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Input Form Card */}
+            <div className="bg-white rounded-2xl p-6 mt-8 shadow-2xl text-slate-800 border border-slate-100 max-w-lg">
+              {/* Tabs */}
+              <div className="flex bg-slate-100 p-1 rounded-xl mb-5">
+                <button
+                  type="button"
+                  onClick={() => setHeroTab('makeModel')}
+                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all ${
+                    heroTab === 'makeModel'
+                      ? 'bg-[#0A1929] text-white shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Make/Model
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHeroTab('plateVin')}
+                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all ${
+                    heroTab === 'plateVin'
+                      ? 'bg-[#0A1929] text-white shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  License Plate/VIN
+                </button>
+              </div>
+
+              {/* Fields */}
+              {heroTab === 'makeModel' ? (
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Make
+                    </label>
+                    <select
+                      value={make}
+                      onChange={(e) => handleMakeChange(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] cursor-pointer"
+                    >
+                      <option value="">Select Make</option>
+                      {VEHICLE_MAKES.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Model
+                    </label>
+                    <select
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      disabled={!make}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] disabled:opacity-50 cursor-pointer"
+                    >
+                      <option value="">Select Model</option>
+                      {(VEHICLE_MODELS[make] || []).map((mod) => (
+                        <option key={mod} value={mod}>{mod}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Year
+                    </label>
+                    <select
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] cursor-pointer"
+                    >
+                      <option value="">Select Year</option>
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-5">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Enter VIN or license plate
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter VIN or license plate"
+                    value={vin}
+                    onChange={(e) => setVin(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-850 font-bold focus:outline-none focus:ring-1 focus:ring-[#29abe2] uppercase placeholder:normal-case shadow-inner"
+                  />
+                </div>
+              )}
+
+              {/* Submit button */}
+              <button
+                type="button"
+                onClick={() => {
+                  buyerGridRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full bg-[#29abe2] hover:bg-[#2089b5] text-white font-bold rounded-xl py-3.5 transition-colors text-sm shadow-md shadow-[#29abe2]/20"
+              >
+                Get Your Offers
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Logo Mark & Lexus Image */}
+          <div className="relative w-full h-full min-h-[350px] md:min-h-[450px] flex items-center justify-center overflow-visible">
+            {/* Background Logo Mark Image */}
+            <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none scale-[1.45] -translate-y-16 z-0">
+              <img
+                src={logoMark}
+                alt="CarMeta Speed-Stripes Logo"
+                className="w-full max-w-[420px] h-auto object-contain"
+              />
+            </div>
+
+            {/* Radial Gradient behind the car */}
+            <div className="absolute w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,_rgba(41,171,226,0.22)_0%,_transparent_70%)] blur-3xl pointer-events-none z-0" />
+
+            {/* White Vehicle Image Overlay */}
+            <div className="relative w-full z-10 flex justify-center">
+              <img
+                src={heroVehicle}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = VEHICLE_IMAGE_URL;
+                }}
+                alt="Vehicle image"
+                className="w-full max-w-[520px] md:max-w-none h-auto object-contain drop-shadow-[0_20px_45px_rgba(0,0,0,0.55)] transform hover:scale-[1.02] transition-transform duration-500"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Page Content (constrained) */}
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-10">
+        
+        {/* 1. Page Header */}
+        <div className="light-glass rounded-[32px] p-6 md:p-8 mb-8 border border-white/40 shadow-sm">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Sell My Car
+          </h1>
+          <p className="text-slate-650 font-semibold text-sm md:text-base mt-2 max-w-[800px] leading-relaxed">
+            Enter your details once. Open every buyer in a new tab. Come back and log your offers to find the best deal.
+          </p>
+        </div>
+
+      {/* 2. Vehicle Input Form */}
+      <div className="light-glass-card rounded-[28px] p-6 md:p-8 mb-10 border border-slate-100 shadow-sm">
+        <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <Search size={18} className="text-[#29abe2]" /> Vehicle Specifications
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              VIN (Vehicle Identification Number)
+            </label>
+            <input
+              type="text"
+              placeholder="17-digit VIN"
+              value={vin}
+              onChange={(e) => setVin(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-inner uppercase placeholder:normal-case transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Year
+            </label>
+            <input
+              type="number"
+              min="1990"
+              max={new Date().getFullYear() + 1}
+              placeholder="e.g. 2020"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-inner transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Make
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Toyota"
+              value={make}
+              onChange={(e) => setMake(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-inner transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Model
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. RAV4"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-inner transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Mileage
+            </label>
+            <input
+              type="number"
+              placeholder="Current odometer"
+              value={mileage}
+              onChange={(e) => setMileage(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-inner transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Overall Condition
+            </label>
+            <select
+              value={condition}
+              onChange={(e) => setCondition(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-950 font-medium focus:outline-none focus:ring-2 focus:ring-[#29abe2]/50 shadow-sm transition-all"
+            >
+              <option value="">Select Condition</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+              <option value="Poor">Poor</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold px-5 py-2.5 text-sm transition-all"
+          >
+            <RefreshCw size={14} /> Reset
+          </button>
+        </div>
+      </div>
+
+      {/* 4. Open All Buyers Button */}
+      <div ref={buyerGridRef} className="mb-6 flex flex-col items-end gap-2">
+        <button
+          onClick={handleOpenAll}
+          className="flex items-center gap-2 rounded-2xl bg-[#29abe2] hover:bg-[#2089b5] text-white font-black px-6 py-3.5 text-sm transition-all shadow-md shadow-[#29abe2]/20 hover:scale-[1.01] active:scale-[0.99]"
+        >
+          <ExternalLink size={16} /> Open all buyers in new tabs
+        </button>
+        <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+          <AlertCircle size={12} className="text-amber-500" />
+          Note: If only one site opens, click the address bar icon to "Always allow popups".
+        </span>
+      </div>
+
+      {/* 3. Buyer Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        {BUYERS.map((buyer) => {
+          const currentOfferVal = offers[buyer.id] || '';
+          return (
+            <div key={buyer.id} className="light-glass-card rounded-[24px] p-6 border border-slate-100 shadow-sm flex flex-col justify-between group transition-all duration-300 hover:shadow-lg">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 mb-1 group-hover:text-[#29abe2] transition-colors">
+                  {buyer.name}
+                </h3>
+                <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
+                  {buyer.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-6">
+                  {buyer.pills.map((pill, i) => (
+                    <span key={i} className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-600 uppercase tracking-wider">
+                      {pill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-slate-50">
+                <button
+                  onClick={() => handleGetOffer(buyer)}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 text-xs transition-colors"
+                >
+                  Get Offer <ExternalLink size={12} />
+                </button>
+
+                {/* Offer Logger input */}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Your Offer ($)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 24500"
+                    value={currentOfferVal}
+                    onChange={(e) => handleOfferChange(buyer.id, e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-bold focus:outline-none focus:ring-1 focus:ring-[#29abe2] shadow-sm transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 5. Ranked Offers Table */}
+      {rankedOffers.length > 0 && (
+        <div className="light-glass-card rounded-[28px] p-6 md:p-8 border border-slate-100 shadow-sm mb-8 overflow-hidden">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <ArrowUpDown size={18} className="text-[#29abe2]" /> Ranked Offers
+            </h2>
+            <button
+              onClick={() => saveOffers({})}
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold px-3 py-1.5 text-[11px] transition-colors"
+            >
+              <RefreshCw size={11} /> Clear all offers
+            </button>
+          </div>
+
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-800 border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200/60 text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <th className="py-3 px-4">Buyer</th>
+                  <th className="py-3 px-4">Your Offer</th>
+                  <th className="py-3 px-4 text-right">vs. Highest (delta)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rankedOffers.map((item, idx) => {
+                  const isTop = idx === 0;
+                  const delta = item.value - highestOffer;
+
+                  return (
+                    <tr 
+                      key={item.id} 
+                      className={`border-b border-slate-100 transition-colors hover:bg-slate-50/50 ${
+                        isTop ? 'border-l-4 border-l-[#29abe2] bg-[#29abe2]/5 font-bold' : ''
+                      }`}
+                    >
+                      <td className="py-3.5 px-4 font-extrabold text-slate-900">
+                        {item.name}
+                        {isTop && (
+                          <span className="ml-2 rounded-full bg-[#29abe2]/20 px-2 py-0.5 text-[9px] font-extrabold text-[#2089b5] uppercase tracking-wider">
+                            Best Deal
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-900 font-bold">
+                        ${item.value.toLocaleString()}
+                      </td>
+                      <td className={`py-3.5 px-4 text-right font-semibold ${
+                        isTop ? 'text-slate-400' : 'text-rose-500'
+                      }`}>
+                        {isTop ? '—' : `-$${Math.abs(delta).toLocaleString()}`}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Pro Tip Callout */}
+      <div className="light-glass rounded-[24px] p-5 border border-[#29abe2]/20 flex items-start gap-4">
+        <ShieldCheck className="text-[#2089b5] shrink-0 mt-0.5" size={24} strokeWidth={1.5} />
+        <div>
+          <h4 className="text-sm font-extrabold text-slate-900">Pro tip: compare multiple quotes</h4>
+          <p className="text-xs font-medium text-slate-650 mt-1 leading-relaxed">
+            Offers can vary by $1,000–$3,000+ for the exact same vehicle depending on market conditions and dealer stock. Always compare at least 3 buyers before accepting an offer.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  );
+};
+
+export default SellMyCar;
