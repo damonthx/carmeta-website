@@ -118,9 +118,6 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
   const [model, setModel] = useState('');
   const [mileage, setMileage] = useState('');
   const [condition, setCondition] = useState('');
-
-  // Hero Section Form State
-  const [heroTab, setHeroTab] = useState<'makeModel' | 'plateVin'>('makeModel');
   
   // Ref for scrolling to the buyer lineup section
   const buyerGridRef = useRef<HTMLDivElement>(null);
@@ -281,113 +278,6 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
                   <p className="text-white/60 text-xs mt-0.5">Safe, private, and hassle-free</p>
                 </div>
               </div>
-            </div>
-
-            {/* Input Form Card */}
-            <div className="bg-white rounded-2xl p-6 mt-8 shadow-2xl text-slate-800 border border-slate-100 max-w-lg">
-              {/* Tabs */}
-              <div className="flex bg-slate-100 p-1 rounded-xl mb-5">
-                <button
-                  type="button"
-                  onClick={() => setHeroTab('makeModel')}
-                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all ${
-                    heroTab === 'makeModel'
-                      ? 'bg-[#0A1929] text-white shadow-sm'
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  Make/Model
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setHeroTab('plateVin')}
-                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all ${
-                    heroTab === 'plateVin'
-                      ? 'bg-[#0A1929] text-white shadow-sm'
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  License Plate/VIN
-                </button>
-              </div>
-
-              {/* Fields */}
-              {heroTab === 'makeModel' ? (
-                <div className="grid grid-cols-3 gap-3 mb-5">
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Make
-                    </label>
-                    <select
-                      value={make}
-                      onChange={(e) => handleMakeChange(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] cursor-pointer"
-                    >
-                      <option value="">Select Make</option>
-                      {VEHICLE_MAKES.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Model
-                    </label>
-                    <select
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                      disabled={!make}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] disabled:opacity-50 cursor-pointer"
-                    >
-                      <option value="">Select Model</option>
-                      {(VEHICLE_MODELS[make] || []).map((mod) => (
-                        <option key={mod} value={mod}>{mod}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Year
-                    </label>
-                    <select
-                      value={year}
-                      onChange={(e) => setYear(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#29abe2] cursor-pointer"
-                    >
-                      <option value="">Select Year</option>
-                      {YEARS.map((y) => (
-                        <option key={y} value={y}>{y}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              ) : (
-                <div className="mb-5">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                    Enter VIN or license plate
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter VIN or license plate"
-                    value={vin}
-                    onChange={(e) => setVin(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-850 font-bold focus:outline-none focus:ring-1 focus:ring-[#29abe2] uppercase placeholder:normal-case shadow-inner"
-                  />
-                </div>
-              )}
-
-              {/* Submit button */}
-              <button
-                type="button"
-                onClick={() => {
-                  buyerGridRef.current?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="w-full bg-[#29abe2] hover:bg-[#2089b5] text-white font-bold rounded-xl py-3.5 transition-colors text-sm shadow-md shadow-[#29abe2]/20"
-              >
-                Get Your Offers
-              </button>
             </div>
           </div>
 
