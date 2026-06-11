@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, ExternalLink, ArrowUpDown, RefreshCw, ShieldCheck, AlertCircle, Tag, Clock, Gem, Zap, Lock } from 'lucide-react';
+import { Search, ExternalLink, ArrowUpDown, RefreshCw, ShieldCheck, AlertCircle } from 'lucide-react';
 // @ts-ignore
 import heroVehicle from '../assets/hero-vehicle.png';
 // @ts-ignore
@@ -109,6 +109,142 @@ const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: currentYear - 1990 + 1 }, (_, i) => (currentYear - i).toString());
 
 const VEHICLE_IMAGE_URL = 'https://www.image2url.com/r2/default/images/1777076688091-58e09a91-5b3b-4dd7-b654-601a5c63f23f.png';
+
+// Custom high-fidelity premium SVG icons to replace basic stock icons
+const BestOffersIcon = () => (
+  <svg 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className="group-hover:scale-110 transition-transform duration-300 relative z-10"
+  >
+    <defs>
+      <linearGradient id="gem-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#80f3ff" />
+        <stop offset="50%" stopColor="#29abe2" />
+        <stop offset="100%" stopColor="#0a2a4a" />
+      </linearGradient>
+      <linearGradient id="gem-grad-accent" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+        <stop offset="100%" stopColor="#29abe2" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+    <path 
+      d="M12 2L21 9L12 22L3 9L12 2Z" 
+      fill="url(#gem-grad-primary)" 
+      fillOpacity="0.1" 
+      stroke="url(#gem-grad-primary)" 
+      strokeWidth="1.5" 
+      strokeLinejoin="round" 
+    />
+    <path 
+      d="M12 2L17.5 9L12 16L6.5 9L12 2Z" 
+      fill="url(#gem-grad-primary)" 
+      fillOpacity="0.25" 
+      stroke="url(#gem-grad-accent)" 
+      strokeWidth="1" 
+      strokeLinejoin="round" 
+    />
+    <path d="M12 2V16" stroke="url(#gem-grad-accent)" strokeWidth="1" />
+    <path d="M3 9H21" stroke="url(#gem-grad-accent)" strokeWidth="0.75" strokeDasharray="2 2" />
+    <path d="M18 5.5L19 6.5M19 5.5L18 6.5" stroke="#fff" strokeWidth="1.25" strokeLinecap="round" />
+  </svg>
+);
+
+const FastEasyIcon = () => (
+  <svg 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className="group-hover:scale-110 transition-transform duration-300 relative z-10"
+  >
+    <defs>
+      <linearGradient id="zap-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#00f0ff" />
+        <stop offset="60%" stopColor="#29abe2" />
+        <stop offset="100%" stopColor="#1e3a8a" />
+      </linearGradient>
+      <linearGradient id="zap-grad-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+        <stop offset="100%" stopColor="#29abe2" stopOpacity="0.1" />
+      </linearGradient>
+    </defs>
+    <path d="M5 16H9M3 12H7M6 8H10" stroke="#29abe2" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+    <path 
+      d="M14 2L6 13H12L10 22L18 11H12L14 2Z" 
+      fill="url(#zap-grad-primary)" 
+      fillOpacity="0.15" 
+      transform="translate(-1, 1)" 
+    />
+    <path 
+      d="M15 2L7 13H13L11 22L19 11H13L15 2Z" 
+      fill="url(#zap-grad-primary)" 
+      stroke="url(#zap-grad-glow)" 
+      strokeWidth="1.25" 
+      strokeLinejoin="round" 
+    />
+  </svg>
+);
+
+const SecureReliableIcon = () => (
+  <svg 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className="group-hover:scale-110 transition-transform duration-300 relative z-10"
+  >
+    <defs>
+      <linearGradient id="lock-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#00f0ff" />
+        <stop offset="50%" stopColor="#29abe2" />
+        <stop offset="100%" stopColor="#0A1929" />
+      </linearGradient>
+      <linearGradient id="lock-grad-shield" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+        <stop offset="100%" stopColor="#29abe2" stopOpacity="0.05" />
+      </linearGradient>
+    </defs>
+    <path 
+      d="M12 2C16 3 20 4.5 20 8.5C20 14.5 15.5 19.5 12 21.5C8.5 19.5 4 14.5 4 8.5C4 4.5 8 3 12 2Z" 
+      fill="url(#lock-grad-primary)" 
+      fillOpacity="0.1" 
+      stroke="url(#lock-grad-primary)" 
+      strokeWidth="1.5" 
+      strokeLinejoin="round" 
+    />
+    <path 
+      d="M12 4.5C14.8 5.3 17.5 6.3 17.5 9.2C17.5 13.5 14.2 17.5 12 19.1C9.8 17.5 6.5 13.5 6.5 9.2C6.5 6.3 9.2 5.3 12 4.5Z" 
+      fill="url(#lock-grad-shield)" 
+      fillOpacity="0.1" 
+      stroke="url(#lock-grad-shield)" 
+      strokeWidth="1" 
+      strokeLinejoin="round" 
+    />
+    <rect 
+      x="10" 
+      y="11" 
+      width="4" 
+      height="4" 
+      rx="1" 
+      stroke="#ffffff" 
+      strokeWidth="1.25" 
+      fill="#29abe2" 
+      fillOpacity="0.3" 
+    />
+    <path 
+      d="M10.75 11V9.5C10.75 8.7 11.3 8 12 8C12.7 8 13.25 8.7 13.25 9.5V11" 
+      stroke="#ffffff" 
+      strokeWidth="1.25" 
+      strokeLinecap="round" 
+    />
+  </svg>
+);
 
 const SellMyCar: React.FC<SellMyCarProps> = () => {
   // Form State
@@ -252,7 +388,7 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
               <div className="flex items-center gap-3 group">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
                   <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <Gem className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
+                  <BestOffersIcon />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Best Offers</h4>
@@ -263,7 +399,7 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
               <div className="flex items-center gap-3 group">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
                   <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <Zap className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
+                  <FastEasyIcon />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Fast & Easy</h4>
@@ -274,7 +410,7 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
               <div className="flex items-center gap-3 group">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
                   <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <Lock className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
+                  <SecureReliableIcon />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Secure & Reliable</h4>
