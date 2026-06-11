@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, ExternalLink, ArrowUpDown, RefreshCw, ShieldCheck, AlertCircle, Tag, Clock } from 'lucide-react';
+import { Search, ExternalLink, ArrowUpDown, RefreshCw, ShieldCheck, AlertCircle, Tag, Clock, Gem, Zap, Lock } from 'lucide-react';
 // @ts-ignore
 import heroVehicle from '../assets/hero-vehicle.png';
 // @ts-ignore
@@ -249,9 +249,10 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
 
             {/* Trust Badges */}
             <div className="flex flex-col sm:flex-row gap-6 mt-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
-                  <Tag size={18} className="text-[#29abe2]" />
+              <div className="flex items-center gap-3 group">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Gem className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Best Offers</h4>
@@ -259,9 +260,10 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
-                  <Clock size={18} className="text-[#29abe2]" />
+              <div className="flex items-center gap-3 group">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Zap className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Fast & Easy</h4>
@@ -269,9 +271,10 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#29abe2]/15 flex items-center justify-center shrink-0 border border-[#29abe2]/30">
-                  <ShieldCheck size={18} className="text-[#29abe2]" />
+              <div className="flex items-center gap-3 group">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center shrink-0 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[#29abe2]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Lock className="text-[#29abe2] group-hover:scale-110 transition-transform duration-300" size={20} />
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-sm">Secure & Reliable</h4>
