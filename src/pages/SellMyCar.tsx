@@ -314,8 +314,8 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-10">
         
         {/* 1. Page Header */}
-        <div className="light-glass rounded-[32px] p-6 md:p-8 mb-8 border border-white/40 shadow-sm">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+        <div className="bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-[32px] p-6 md:p-8 mb-8">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#29abe2] tracking-tight">
             Sell My Car
           </h1>
           <p className="text-slate-650 font-semibold text-sm md:text-base mt-2 max-w-[800px] leading-relaxed">
@@ -324,8 +324,8 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
         </div>
 
       {/* 2. Vehicle Input Form */}
-      <div className="light-glass-card rounded-[28px] p-6 md:p-8 mb-10 border border-slate-100 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <div className="bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-[28px] p-6 md:p-8 mb-10">
+        <h2 className="text-lg font-bold text-[#29abe2] mb-6 flex items-center gap-2">
           <Search size={18} className="text-[#29abe2]" /> Vehicle Specifications
         </h2>
         
@@ -444,9 +444,9 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
         {BUYERS.map((buyer) => {
           const currentOfferVal = offers[buyer.id] || '';
           return (
-            <div key={buyer.id} className="light-glass-card rounded-[24px] p-6 border border-slate-100 shadow-sm flex flex-col justify-between group transition-all duration-300 hover:shadow-lg">
+            <div key={buyer.id} className="bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-[24px] p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-lg">
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900 mb-1 group-hover:text-[#29abe2] transition-colors">
+                <h3 className="text-lg font-extrabold text-[#29abe2] mb-1 group-hover:text-[#2089b5] transition-colors">
                   {buyer.name}
                 </h3>
                 <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
@@ -490,9 +490,9 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
 
       {/* 5. Ranked Offers Table */}
       {rankedOffers.length > 0 && (
-        <div className="light-glass-card rounded-[28px] p-6 md:p-8 border border-slate-100 shadow-sm mb-8 overflow-hidden">
+        <div className="bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-[28px] p-6 md:p-8 border border-slate-100 shadow-sm mb-8 overflow-hidden">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-[#29abe2] flex items-center gap-2">
               <ArrowUpDown size={18} className="text-[#29abe2]" /> Ranked Offers
             </h2>
             <button
@@ -550,10 +550,10 @@ const SellMyCar: React.FC<SellMyCarProps> = () => {
       )}
 
       {/* 6. Pro Tip Callout */}
-      <div className="light-glass rounded-[24px] p-5 border border-[#29abe2]/20 flex items-start gap-4">
+      <div className="bg-white/40 backdrop-blur-xl border border-[#29abe2]/30 shadow-[0_8px_32px_0_rgba(41,171,226,0.05)] rounded-[24px] p-5 flex items-start gap-4">
         <ShieldCheck className="text-[#2089b5] shrink-0 mt-0.5" size={24} strokeWidth={1.5} />
         <div>
-          <h4 className="text-sm font-extrabold text-slate-900">Pro tip: compare multiple quotes</h4>
+          <h4 className="text-sm font-extrabold text-[#29abe2]">Pro tip: compare multiple quotes</h4>
           <p className="text-xs font-medium text-slate-650 mt-1 leading-relaxed">
             Offers can vary by $1,000–$3,000+ for the exact same vehicle depending on market conditions and dealer stock. Always compare at least 3 buyers before accepting an offer.
           </p>
