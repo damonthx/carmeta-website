@@ -15,7 +15,6 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import HeroSearch from './components/HeroSearch';
-import InventoryGrid from './components/InventoryGrid';
 import VisionPage from './VisionPage';
 import TeamPage from './TeamPage';
 import PressPage from './PressPage';
@@ -736,10 +735,6 @@ export default function App() {
             />
             <EstimateBudgetSection />
             <TCOCalculator />
-            
-            <div className="border-t border-slate-100 pt-16 mt-16">
-              <InventoryGrid />
-            </div>
           </main>
           
           <DiscoverBanner />
