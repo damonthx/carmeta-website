@@ -26,6 +26,7 @@ import { MarketCheckCar } from './services/marketcheck';
 import { supabase } from './supabaseClient';
 import MarketPulse from './components/MarketPulse';
 import MarketPulsePage from './MarketPulsePage';
+import OnboardingPage from '../app/admin/onboarding/page';
 
 const NavBar = ({ onSearchClick, onSellClick, onHomeClick, onSignInClick, onDashboardClick, onMarketPulseClick, session }: { onSearchClick: () => void; onSellClick: () => void; onHomeClick: () => void; onSignInClick: () => void; onDashboardClick: () => void; onMarketPulseClick: () => void; session: any }) => (
   <header className="light-glass sticky top-0 z-50">
@@ -454,7 +455,7 @@ const BottomSearch = () => (
   </div>
 );
 
-const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse') => void }) => (
+const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding') => void }) => (
   <footer className="bg-[#000000] pt-16 mt-auto">
     <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       <div className="flex flex-col md:flex-row justify-between items-start gap-12">
@@ -484,6 +485,7 @@ const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' 
               <li><button onClick={() => onNavigate('dealers')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Dealers</button></li>
               <li><a href="#" className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">Partners</a></li>
               <li><button onClick={() => onNavigate('influencers')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Influencers</button></li>
+              <li><button onClick={() => onNavigate('admin_onboarding')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Dealer Intake (Admin)</button></li>
             </ul>
           </div>
           <div>
@@ -518,7 +520,7 @@ const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' 
 );
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse'>('home');
+  const [currentPath, setCurrentPath] = useState<'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding'>('home');
   const [selectedVehicle, setSelectedVehicle] = useState<MarketCheckCar | null>(null);
   const [session, setSession] = useState<any>(null);
   const [signupEmail, setSignupEmail] = useState<string>('');
@@ -545,7 +547,7 @@ export default function App() {
   };
 
   // Protected route logic
-  const navigateTo = (path: 'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse') => {
+  const navigateTo = (path: 'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding') => {
     const protectedPaths = ['dashboard'];
     if (protectedPaths.includes(path) && !session) {
       setCurrentPath('signin');
@@ -624,6 +626,8 @@ export default function App() {
           <InfluencersPage />
         ) : currentPath === 'market_pulse' ? (
           <MarketPulsePage onBack={() => navigateTo('home')} />
+        ) : currentPath === 'admin_onboarding' ? (
+          <OnboardingPage />
         ) : (
           <>
             <HeroSearch 

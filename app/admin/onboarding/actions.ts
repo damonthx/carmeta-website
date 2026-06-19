@@ -2,9 +2,25 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase client securely on the server
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+// Initialize Supabase client securely on the server, or fall back to client env in Vite
+let supabaseUrl = "";
+let supabaseServiceKey = "";
+
+if (typeof process !== "undefined" && process.env) {
+  supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+}
+
+if (!supabaseUrl && typeof window !== "undefined") {
+  try {
+    // @ts-ignore
+    supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+    // @ts-ignore
+    supabaseServiceKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+  } catch (e) {
+    // Ignore reference errors in non-Vite environments
+  }
+}
 
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
