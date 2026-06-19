@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, MapPin, Heart, User, ChevronDown, 
   ArrowUpRight, CarFront, Sparkles, CheckCircle2, 
-  AlertTriangle, AlertCircle, ArrowUpCircle, ArrowDownLeft
+  AlertTriangle, AlertCircle, ArrowUpCircle, ArrowDownLeft,
+  RefreshCw
 } from 'lucide-react';
+import { GoogleGenAI, Type, Schema } from "@google/genai";
 import SearchPage from './SearchPage';
 import TCOCalculator from './TCOCalculator';
 import SellPage from './SellPage';
@@ -425,35 +427,122 @@ const ResearchAndReviews = () => {
   );
 }
 
-const BottomSearch = () => (
-  <div className="bg-transparent py-16 px-4">
-    <div className="max-w-[800px] mx-auto text-center light-glass-card rounded-[40px] py-16 px-8">
-      <h2 className="text-[28px] font-extrabold text-slate-900 mb-2 tracking-tight">Search for our best deals</h2>
-      <p className="text-slate-600 font-semibold mb-8 text-[13px]">Our AI powered tool can find the needle in the haystack.</p>
+const BottomSearch = ({ onSearch }: { onSearch: (filters: any) => void }) => {
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (text: string) => {
+    const promptText = text.trim();
+    if (!promptText) return;
+    setLoading(true);
+    try {
+      // In Vite, env vars are exposed via import.meta.env
+      // @ts-ignore
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined);
       
-      <div className="flex items-center light-glass rounded-full px-3 py-1.5 w-full max-w-[600px] mx-auto mb-8 shadow-sm focus-within:ring-4 focus-within:ring-[#29abe2]/20 transition-all">
-        <input 
-          type="text" 
-          placeholder="Ask anything or try a suggestion below..." 
-          className="flex-1 outline-none bg-transparent text-slate-900 text-[13px] font-bold placeholder:font-medium placeholder:text-slate-500 h-8 ml-3"
-        />
-        <div className="text-slate-500 bg-white/50 hover:bg-white transition-colors cursor-pointer p-1.5 rounded-lg mr-0.5"><ArrowUpRight size={16} strokeWidth={1}/></div>
-      </div>
-      
-      <div className="flex flex-wrap justify-center gap-3">
-        {[
-          { text: "Great deals under $10,000", icon: "🚙" },
-          { text: "Budget friendly low mileage", icon: "🪙" },
-          { text: "Three rows under $30,000", icon: "🚗" }
-        ].map((chip, idx) => (
-          <button key={idx} className="light-glass text-slate-900 rounded-full px-4 py-2 text-[11px] font-bold hover:bg-white/80 transition-colors flex items-center gap-2">
-            <span className="opacity-90">{chip.icon}</span> {chip.text}
+      if (!apiKey) {
+        console.warn("No Gemini API key found, please configure it.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey: apiKey });
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `Analyze this user's car search request: "${promptText}". Extract the constraints and return suggested car attributes as JSON.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              make: { type: Type.STRING, description: "Suggested car make (e.g. Toyota)" },
+              model: { type: Type.STRING, description: "Suggested car model (e.g. Camry)" },
+              bodyType: { type: Type.STRING, description: "e.g. SUV, Sedan, Pickup Truck, Coupe, Hatchback" },
+              fuelType: { type: Type.STRING, description: "e.g. Gas, Electric, Hybrid" },
+              maxPrice: { type: Type.INTEGER, description: "Maximum price in dollars if specified" },
+              searchTerm: { type: Type.STRING, description: "A general search keyword if make/model aren't specific enough" },
+              reason: { type: Type.STRING, description: "Brief friendly explanation of why you selected these filters based on their prompt" }
+            },
+            required: ["reason"]
+          } as Schema
+        }
+      });
+
+      const result = JSON.parse(response.text);
+      onSearch({
+        make: result.make || '',
+        model: result.model || '',
+        bodyTypes: result.bodyType ? [result.bodyType] : [],
+        fuelTypes: result.fuelType ? [result.fuelType] : [],
+        maxPrice: result.maxPrice || 100000,
+        searchTerm: result.searchTerm || '',
+        aiReasoning: result.reason
+      });
+    } catch (error) {
+      console.error("Bottom AI Search Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch(query);
+    }
+  };
+
+  return (
+    <div className="bg-transparent py-16 px-4">
+      <div className="max-w-[800px] mx-auto text-center light-glass-card rounded-[40px] py-16 px-8">
+        <h2 className="text-[28px] font-extrabold text-slate-900 mb-2 tracking-tight">Search for our best deals</h2>
+        <p className="text-slate-600 font-semibold mb-8 text-[13px]">Our AI powered tool can find the needle in the haystack.</p>
+        
+        <div className="flex items-center light-glass rounded-full px-3 py-1.5 w-full max-w-[600px] mx-auto mb-8 shadow-sm focus-within:ring-4 focus-within:ring-[#29abe2]/20 transition-all">
+          <input 
+            type="text" 
+            placeholder={loading ? "Thinking..." : "Ask anything or try a suggestion below..."} 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
+            className="flex-1 outline-none bg-transparent text-slate-900 text-[13px] font-bold placeholder:font-medium placeholder:text-slate-500 h-8 ml-3 disabled:opacity-50"
+          />
+          <button 
+            type="button"
+            onClick={() => handleSearch(query)}
+            disabled={loading || !query.trim()}
+            className="text-slate-500 bg-white/50 hover:bg-white transition-colors cursor-pointer p-1.5 rounded-lg mr-0.5 disabled:opacity-55"
+          >
+            {loading ? (
+              <RefreshCw size={16} className="animate-spin text-[#29abe2]" />
+            ) : (
+              <ArrowUpRight size={16} strokeWidth={1}/>
+            )}
           </button>
-        ))}
+        </div>
+        
+        <div className="flex flex-wrap justify-center gap-3">
+          {[
+            { text: "Great deals under $10,000", icon: "🚙" },
+            { text: "Budget friendly low mileage", icon: "🪙" },
+            { text: "Three rows under $30,000", icon: "🚗" }
+          ].map((chip, idx) => (
+            <button 
+              key={idx} 
+              type="button"
+              disabled={loading}
+              onClick={() => {
+                setQuery(chip.text);
+                handleSearch(chip.text);
+              }}
+              className="light-glass text-slate-900 rounded-full px-4 py-2 text-[11px] font-bold hover:bg-white/80 transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            >
+              <span className="opacity-90">{chip.icon}</span> {chip.text}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding') => void }) => (
   <footer className="bg-[#000000] pt-16 mt-auto">
@@ -659,7 +748,12 @@ export default function App() {
             <ResearchAndReviews />
           </main>
           
-          <BottomSearch />
+          <BottomSearch 
+            onSearch={(filters) => {
+              setSearchFilters(filters);
+              navigateTo('search');
+            }} 
+          />
         </>
       )}
       </div>

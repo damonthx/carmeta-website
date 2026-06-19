@@ -249,11 +249,6 @@ export default function InventoryGrid() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {usingFallback && (
-            <span className="flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/50 px-3 py-1.5 text-xs font-bold text-amber-700 shadow-sm">
-              <AlertCircle size={14} /> Preview Mock Data
-            </span>
-          )}
           <button
             onClick={fetchInventory}
             disabled={loading}
