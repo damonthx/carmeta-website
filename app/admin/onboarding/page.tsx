@@ -63,10 +63,11 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0A1929] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans text-white">
-      {/* Background Neon Glow Blobs */}
+    <div className="relative min-h-screen bg-gradient-to-tr from-[#050C15] via-[#0A1929] to-[#122A47] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 overflow-hidden font-sans text-white">
+      {/* Background Neon Glow Blobs & Spotlight */}
       <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] rounded-full bg-[radial-gradient(circle,_rgba(41,171,226,0.18)_0%,_transparent_70%)] blur-3xl pointer-events-none select-none z-0" />
       <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,_rgba(0,229,255,0.12)_0%,_transparent_70%)] blur-3xl pointer-events-none select-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,_rgba(41,171,226,0.08)_0%,_transparent_60%)] blur-3xl pointer-events-none select-none z-0" />
 
       <div className="relative z-10 w-full max-w-2xl">
         {/* Main Glassmorphic Panel */}
@@ -74,9 +75,6 @@ export default function OnboardingPage() {
           
           {/* Header */}
           <div className="flex flex-col items-center text-center mb-10">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#29abe2]/20 to-[#00e5ff]/5 border border-[#29abe2]/30 flex items-center justify-center mb-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-              <Building2 className="text-[#29abe2]" size={30} strokeWidth={1.5} />
-            </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               New Dealership Intake
             </h1>
