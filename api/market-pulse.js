@@ -92,13 +92,14 @@ export default async function handler(req, res) {
       // Monthly observations only (period M01–M12; M13 = annual average),
       // sorted newest-first by BLS — normalize to oldest-first.
       const points = series.data
-        .filter((d) => d.period !== 'M13')
+        .filter((d) => d.period !== 'M13' && d.value !== '-')
         .map((d) => ({
           year: Number(d.year),
           month: Number(d.period.slice(1)),
           value: Number(d.value),
           periodName: d.periodName,
         }))
+        .filter((p) => !isNaN(p.value))
         .sort((a, b) => a.year - b.year || a.month - b.month);
 
       const latest = points[points.length - 1];
@@ -120,10 +121,10 @@ export default async function handler(req, res) {
       };
     });
 
-    // CPI is monthly — cache hard at the edge, serve stale while revalidating.
+    // Set a weekly refresh time (604800 seconds)
     res.setHeader(
       'Cache-Control',
-      's-maxage=43200, stale-while-revalidate=86400'
+      's-maxage=604800, stale-while-revalidate=86400'
     );
     res.status(200).json({
       source: 'U.S. Bureau of Labor Statistics, Consumer Price Index',

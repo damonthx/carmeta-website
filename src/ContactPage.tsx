@@ -68,23 +68,32 @@ export default function ContactPage() {
         {/* Contact Info & Locations */}
         <div className="space-y-8">
           {/* Support Channels */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="light-glass-card rounded-[24px] p-6 border border-white/60 bg-white/60 backdrop-blur-md">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                <Phone size={20} className="text-[#29abe2]" />
+          <div className="light-glass-card rounded-[24px] p-6 md:p-8 border border-white/60 bg-white/60 backdrop-blur-md">
+            <h3 className="text-xl font-bold text-slate-900 mb-6">Support Channels</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+              {/* Call Support */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                  <Phone size={20} className="text-[#29abe2]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">Call Support</h4>
+                  <p className="text-xs text-slate-500 mb-2">Mon-Fri, 9am - 6pm EST</p>
+                  <a href="tel:1-800-555-0123" className="text-sm md:text-base font-bold text-[#29abe2] hover:text-[#2089b5] transition-colors break-all">1-800-555-0123</a>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-1">Call Support</h3>
-              <p className="text-sm text-slate-500 mb-3">Mon-Fri, 9am - 6pm EST</p>
-              <a href="tel:1-800-555-0123" className="text-lg font-bold text-[#29abe2] hover:text-[#2089b5] transition-colors">1-800-555-0123</a>
-            </div>
 
-            <div className="light-glass-card rounded-[24px] p-6 border border-white/60 bg-white/60 backdrop-blur-md">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                <Mail size={20} className="text-[#29abe2]" />
+              {/* Email Support */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                  <Mail size={20} className="text-[#29abe2]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">Email Us</h4>
+                  <p className="text-xs text-slate-500 mb-2">We'll respond within 24hrs</p>
+                  <a href="mailto:support@carmeta.com" className="text-sm md:text-base font-bold text-[#29abe2] hover:text-[#2089b5] transition-colors break-all">support@carmeta.com</a>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-1">Email Us</h3>
-              <p className="text-sm text-slate-500 mb-3">We'll respond within 24hrs</p>
-              <a href="mailto:support@carmeta.com" className="text-lg font-bold text-[#29abe2] hover:text-[#2089b5] transition-colors">support@carmeta.com</a>
             </div>
           </div>
 

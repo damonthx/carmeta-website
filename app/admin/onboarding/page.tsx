@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from 'react';
-import { Building2, User, Mail, FolderCog, Loader2, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
+import { 
+  Building2, User, Mail, FolderCog, Loader2, ArrowRight, ShieldCheck, AlertCircle, 
+  Phone, Globe, MapPin, Settings, Layers, Activity, ChevronDown, Database 
+} from 'lucide-react';
 import { createDealership, ActionResponse } from './actions';
 
 export default function OnboardingPage() {
@@ -11,6 +14,17 @@ export default function OnboardingPage() {
   const [itContactEmail, setItContactEmail] = useState("");
   const [ftpFolderPath, setFtpFolderPath] = useState("");
   const [isManualFtp, setIsManualFtp] = useState(false);
+
+  // New production-grade fields states
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [stateVal, setStateVal] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [dmsProvider, setDmsProvider] = useState("");
+  const [inventoryStatus, setInventoryStatus] = useState("pending_feed");
+  const [subscriptionTier, setSubscriptionTier] = useState("standard");
 
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ActionResponse | null>(null);
@@ -54,6 +68,16 @@ export default function OnboardingPage() {
         setItContactEmail("");
         setFtpFolderPath("");
         setIsManualFtp(false);
+        setPhoneNumber("");
+        setWebsiteUrl("");
+        setStreetAddress("");
+        setCity("");
+        setStateVal("");
+        setZipCode("");
+        setDmsProvider("");
+        setInventoryStatus("pending_feed");
+        setSubscriptionTier("standard");
+        
         // Show success toast
         setShowToast(true);
         // Automatically hide toast after 5 seconds
@@ -69,7 +93,7 @@ export default function OnboardingPage() {
       <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,_rgba(0,229,255,0.12)_0%,_transparent_70%)] blur-3xl pointer-events-none select-none z-0" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,_rgba(41,171,226,0.08)_0%,_transparent_60%)] blur-3xl pointer-events-none select-none z-0" />
 
-      <div className="relative z-10 w-full max-w-2xl">
+      <div className="relative z-10 w-full max-w-3xl">
         {/* Main Glassmorphic Panel */}
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.4)] rounded-[32px] p-8 md:p-12 relative overflow-hidden">
           
@@ -94,125 +118,323 @@ export default function OnboardingPage() {
           )}
 
           {/* Form */}
-          <form onSubmit={handleFormSubmit} className="space-y-6">
+          <form onSubmit={handleFormSubmit} className="space-y-8">
             
-            {/* Dealership Name */}
-            <div>
-              <label htmlFor="dealership_name" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
-                Dealership Name
-              </label>
-              <div className="relative">
-                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                <input
-                  id="dealership_name"
-                  name="dealership_name"
-                  type="text"
-                  required
-                  placeholder="e.g. Texas Motors"
-                  value={dealershipName}
-                  onChange={(e) => setDealershipName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
-                />
+            {/* Card 1: Basic Details */}
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-6">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-white/10">
+                <Building2 className="text-[#29abe2]" size={20} />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">Basic Details</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Dealership Name */}
+                <div className="md:col-span-2">
+                  <label htmlFor="dealership_name" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Dealership Name
+                  </label>
+                  <div className="relative">
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="dealership_name"
+                      name="dealership_name"
+                      type="text"
+                      required
+                      placeholder="e.g. Texas Motors"
+                      value={dealershipName}
+                      onChange={(e) => setDealershipName(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label htmlFor="phone_number" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="phone_number"
+                      name="phone_number"
+                      type="tel"
+                      placeholder="(555) 000-0000"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Website URL */}
+                <div>
+                  <label htmlFor="website_url" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Website URL
+                  </label>
+                  <div className="relative">
+                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="website_url"
+                      name="website_url"
+                      type="text"
+                      placeholder="https://www.example.com"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Primary Contact Name */}
+                <div className="md:col-span-2">
+                  <label htmlFor="primary_contact_name" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Primary Contact Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="primary_contact_name"
+                      name="primary_contact_name"
+                      type="text"
+                      required
+                      placeholder="John Doe"
+                      value={primaryContactName}
+                      onChange={(e) => setPrimaryContactName(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Primary Contact Email */}
+                <div>
+                  <label htmlFor="primary_contact_email" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Primary Contact Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="primary_contact_email"
+                      name="primary_contact_email"
+                      type="email"
+                      required
+                      placeholder="john@dealership.com"
+                      value={primaryContactEmail}
+                      onChange={(e) => setPrimaryContactEmail(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* IT Contact Email */}
+                <div>
+                  <label htmlFor="it_contact_email" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    IT Contact Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="it_contact_email"
+                      name="it_contact_email"
+                      type="email"
+                      required
+                      placeholder="it-admin@dealership.com"
+                      value={itContactEmail}
+                      onChange={(e) => setItContactEmail(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Contacts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Primary Contact Name */}
-              <div>
-                <label htmlFor="primary_contact_name" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
-                  Primary Contact Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+            {/* Card 2: Location */}
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-6">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-white/10">
+                <MapPin className="text-[#29abe2]" size={20} />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">Location</h3>
+              </div>
+
+              <div className="grid grid-cols-4 gap-6">
+                {/* Street Address */}
+                <div className="col-span-4">
+                  <label htmlFor="street_address" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Street Address
+                  </label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="street_address"
+                      name="street_address"
+                      type="text"
+                      placeholder="123 Main St"
+                      value={streetAddress}
+                      onChange={(e) => setStreetAddress(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* City */}
+                <div className="col-span-4 md:col-span-2">
+                  <label htmlFor="city" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    City
+                  </label>
                   <input
-                    id="primary_contact_name"
-                    name="primary_contact_name"
+                    id="city"
+                    name="city"
                     type="text"
-                    required
-                    placeholder="John Doe"
-                    value={primaryContactName}
-                    onChange={(e) => setPrimaryContactName(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    placeholder="Austin"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
                   />
                 </div>
-              </div>
 
-              {/* Primary Contact Email */}
-              <div>
-                <label htmlFor="primary_contact_email" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
-                  Primary Contact Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                {/* State */}
+                <div className="col-span-2 md:col-span-1">
+                  <label htmlFor="state" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    State
+                  </label>
                   <input
-                    id="primary_contact_email"
-                    name="primary_contact_email"
-                    type="email"
-                    required
-                    placeholder="john@dealership.com"
-                    value={primaryContactEmail}
-                    onChange={(e) => setPrimaryContactEmail(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    id="state"
+                    name="state"
+                    type="text"
+                    placeholder="TX"
+                    value={stateVal}
+                    onChange={(e) => setStateVal(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                  />
+                </div>
+
+                {/* Zip Code */}
+                <div className="col-span-2 md:col-span-1">
+                  <label htmlFor="zip_code" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Zip Code
+                  </label>
+                  <input
+                    id="zip_code"
+                    name="zip_code"
+                    type="text"
+                    placeholder="78701"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
                   />
                 </div>
               </div>
-
             </div>
 
-            {/* IT Contact Email */}
-            <div>
-              <label htmlFor="it_contact_email" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
-                IT Contact Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                <input
-                  id="it_contact_email"
-                  name="it_contact_email"
-                  type="email"
-                  required
-                  placeholder="it-admin@dealership.com"
-                  value={itContactEmail}
-                  onChange={(e) => setItContactEmail(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
-                />
+            {/* Card 3: System Integration */}
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-6">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-white/10">
+                <Settings className="text-[#29abe2]" size={20} />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">System Integration</h3>
               </div>
-            </div>
 
-            {/* FTP Folder Path */}
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <label htmlFor="ftp_folder_path" className="block text-xs font-bold uppercase tracking-wider text-white/60">
-                  FTP Folder Path
-                </label>
-                {isManualFtp && (
-                  <button
-                    type="button"
-                    onClick={() => setIsManualFtp(false)}
-                    className="text-[10px] text-[#29abe2] hover:underline font-bold uppercase tracking-wider"
-                  >
-                    Reset Auto Slug
-                  </button>
-                )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* FTP Folder Path */}
+                <div className="md:col-span-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <label htmlFor="ftp_folder_path" className="block text-xs font-bold uppercase tracking-wider text-white/60">
+                      FTP Folder Path
+                    </label>
+                    {isManualFtp && (
+                      <button
+                        type="button"
+                        onClick={() => setIsManualFtp(false)}
+                        className="text-[10px] text-[#29abe2] hover:underline font-bold uppercase tracking-wider"
+                      >
+                        Reset Auto Slug
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <FolderCog className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <input
+                      id="ftp_folder_path"
+                      name="ftp_folder_path"
+                      type="text"
+                      required
+                      placeholder="/slug-name/"
+                      value={ftpFolderPath}
+                      onChange={handleFtpChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[10px] text-white/40 font-medium">
+                    Must start and end with a slash, e.g. <span className="text-white/60">/texas-motors/</span>
+                  </p>
+                </div>
+
+                {/* DMS Provider */}
+                <div>
+                  <label htmlFor="dms_provider" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    DMS Provider
+                  </label>
+                  <div className="relative">
+                    <Database className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <select
+                      id="dms_provider"
+                      name="dms_provider"
+                      value={dmsProvider}
+                      onChange={(e) => setDmsProvider(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium appearance-none cursor-pointer"
+                    >
+                      <option value="" className="bg-[#0e1f35] text-white/50">Select DMS Provider</option>
+                      <option value="Dealer Car Search" className="bg-[#0e1f35] text-white">Dealer Car Search</option>
+                      <option value="vAuto" className="bg-[#0e1f35] text-white">vAuto</option>
+                      <option value="HomeNet" className="bg-[#0e1f35] text-white">HomeNet</option>
+                      <option value="Other" className="bg-[#0e1f35] text-white">Other</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" size={18} />
+                  </div>
+                </div>
+
+                {/* Inventory Status */}
+                <div>
+                  <label htmlFor="inventory_status" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Inventory Status
+                  </label>
+                  <div className="relative">
+                    <Activity className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <select
+                      id="inventory_status"
+                      name="inventory_status"
+                      value={inventoryStatus}
+                      onChange={(e) => setInventoryStatus(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium appearance-none cursor-pointer"
+                    >
+                      <option value="pending_feed" className="bg-[#0e1f35] text-white">Pending Feed</option>
+                      <option value="active" className="bg-[#0e1f35] text-white">Active</option>
+                      <option value="paused" className="bg-[#0e1f35] text-white">Paused</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" size={18} />
+                  </div>
+                </div>
+
+                {/* Subscription Tier */}
+                <div className="md:col-span-2">
+                  <label htmlFor="subscription_tier" className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+                    Subscription Tier
+                  </label>
+                  <div className="relative">
+                    <Layers className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <select
+                      id="subscription_tier"
+                      name="subscription_tier"
+                      value={subscriptionTier}
+                      onChange={(e) => setSubscriptionTier(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium appearance-none cursor-pointer"
+                    >
+                      <option value="standard" className="bg-[#0e1f35] text-white">Standard</option>
+                      <option value="premium" className="bg-[#0e1f35] text-white">Premium</option>
+                      <option value="enterprise" className="bg-[#0e1f35] text-white">Enterprise</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" size={18} />
+                  </div>
+                </div>
               </div>
-              <div className="relative">
-                <FolderCog className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                <input
-                  id="ftp_folder_path"
-                  name="ftp_folder_path"
-                  type="text"
-                  required
-                  placeholder="/slug-name/"
-                  value={ftpFolderPath}
-                  onChange={handleFtpChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#29abe2] focus:ring-2 focus:ring-[#29abe2]/20 transition-all font-medium"
-                />
-              </div>
-              <p className="mt-1.5 text-[10px] text-white/40 font-medium">
-                Must start and end with a slash, e.g. <span className="text-white/60">/texas-motors/</span>
-              </p>
             </div>
 
             {/* Submit Button */}

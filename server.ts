@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
+// @ts-ignore
+import marketPulseHandler from "./api/market-pulse.js";
 
 // Load environment variables from .env or .env.local
 if (fs.existsSync('.env.local')) {
@@ -84,6 +86,16 @@ async function startServer() {
     } catch (error) {
       console.error('Predict Proxy Error:', error);
       res.status(500).json({ error: 'Failed to fetch TCO from MarketCheck', details: String(error) });
+    }
+  });
+
+  // Add local proxy endpoint for MarketPulse
+  app.get("/api/market-pulse", async (req, res) => {
+    try {
+      await marketPulseHandler(req, res);
+    } catch (error) {
+      console.error("MarketPulse Proxy Error:", error);
+      res.status(500).json({ error: "Failed to fetch MarketPulse data", details: String(error) });
     }
   });
 

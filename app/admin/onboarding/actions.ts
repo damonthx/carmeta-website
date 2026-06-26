@@ -54,6 +54,17 @@ export async function createDealership(prevState: any, formData: FormData): Prom
   const itContactEmail = formData.get("it_contact_email")?.toString().trim();
   const ftpFolderPath = formData.get("ftp_folder_path")?.toString().trim();
 
+  // New production-grade fields
+  const phoneNumber = formData.get("phone_number")?.toString().trim() || "";
+  const websiteUrl = formData.get("website_url")?.toString().trim() || "";
+  const streetAddress = formData.get("street_address")?.toString().trim() || "";
+  const city = formData.get("city")?.toString().trim() || "";
+  const stateVal = formData.get("state")?.toString().trim() || "";
+  const zipCode = formData.get("zip_code")?.toString().trim() || "";
+  const dmsProvider = formData.get("dms_provider")?.toString().trim() || "";
+  const inventoryStatus = formData.get("inventory_status")?.toString().trim() || "pending_feed";
+  const subscriptionTier = formData.get("subscription_tier")?.toString().trim() || "standard";
+
   // Basic validations
   if (!dealershipName) {
     return { success: false, error: "Dealership Name is required." };
@@ -86,7 +97,16 @@ export async function createDealership(prevState: any, formData: FormData): Prom
           primary_contact_name: primaryContactName,
           primary_contact_email: primaryContactEmail,
           it_contact_email: itContactEmail,
-          ftp_folder_path: ftpFolderPath
+          ftp_folder_path: ftpFolderPath,
+          phone_number: phoneNumber,
+          website_url: websiteUrl,
+          street_address: streetAddress,
+          city: city,
+          state: stateVal,
+          zip_code: zipCode,
+          dms_provider: dmsProvider,
+          inventory_status: inventoryStatus,
+          subscription_tier: subscriptionTier
         }
       ]);
 

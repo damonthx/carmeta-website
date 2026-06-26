@@ -34,7 +34,7 @@ export default function PublicRelationsPage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Email</p>
-                    <a href="mailto:press@carmeta.com" className="text-lg font-bold text-slate-900 hover:text-[#29abe2] transition-colors">press@carmeta.com</a>
+                    <a href="mailto:contact@car-meta.com" className="text-lg font-bold text-slate-900 hover:text-[#29abe2] transition-colors">contact@car-meta.com</a>
                   </div>
                 </div>
 
@@ -46,7 +46,7 @@ export default function PublicRelationsPage() {
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Headquarters</p>
                     <p className="text-lg font-bold text-slate-900 leading-snug">
                       123 Innovation Drive<br/>
-                      Austin, TX 78701
+                      Dallas, TX
                     </p>
                   </div>
                 </div>

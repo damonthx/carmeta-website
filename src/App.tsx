@@ -28,8 +28,12 @@ import { supabase } from './supabaseClient';
 import MarketPulse from './components/MarketPulse';
 import MarketPulsePage from './MarketPulsePage';
 import OnboardingPage from '../app/admin/onboarding/page';
+import LatestArticles from './components/LatestArticles';
+import ExpertAdviceFeeds from './components/ExpertAdviceFeeds';
+import FeaturedInfluencerFeeds from './components/FeaturedInfluencerFeeds';
+import FinancePage from './FinancePage';
 
-const NavBar = ({ onSearchClick, onSellClick, onHomeClick, onSignInClick, onDashboardClick, onMarketPulseClick, session }: { onSearchClick: () => void; onSellClick: () => void; onHomeClick: () => void; onSignInClick: () => void; onDashboardClick: () => void; onMarketPulseClick: () => void; session: any }) => (
+const NavBar = ({ onSearchClick, onSellClick, onHomeClick, onSignInClick, onDashboardClick, onMarketPulseClick, onFinanceClick, session }: { onSearchClick: () => void; onSellClick: () => void; onHomeClick: () => void; onSignInClick: () => void; onDashboardClick: () => void; onMarketPulseClick: () => void; onFinanceClick: () => void; session: any }) => (
   <header className="light-glass sticky top-0 z-50">
     <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-16">
@@ -60,12 +64,8 @@ const NavBar = ({ onSearchClick, onSellClick, onHomeClick, onSignInClick, onDash
               </div>
             </div>
             
-            <a href="#" className="flex items-center gap-1.5 hover:text-[#29abe2] transition-colors py-5">Finance <ChevronDown size={14} strokeWidth={1}/></a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onFinanceClick(); }} className="flex items-center gap-1.5 hover:text-[#29abe2] transition-colors py-5">Finance <ChevronDown size={14} strokeWidth={1}/></a>
             <a href="#" onClick={(e) => { e.preventDefault(); onSellClick(); }} className="flex items-center gap-1.5 hover:text-[#29abe2] transition-colors py-5">Sell My Car</a>
-            <a href="#" className="flex items-center gap-1.5 hover:text-[#29abe2] transition-colors text-[#D9232A] py-5">
-               <Sparkles size={14} strokeWidth={1}/>
-               Discover
-            </a>
             <a href="#" onClick={(e) => { e.preventDefault(); onMarketPulseClick(); }} className="flex items-center gap-1.5 hover:text-[#29abe2] transition-colors py-5">Market Pulse</a>
           </nav>
         </div>
@@ -304,7 +304,7 @@ const BrowseByBodyType = ({ onCategoryClick }: { onCategoryClick: (category: str
     
     // Calculate 3D transforms
     const translateZ = isFront ? 0 : -200;
-    const translateX = diff * 165; 
+    const translateX = diff * 198; 
     const scale = isFront ? (diff === 0 ? 1 : 0.9) : 0.7;
     const opacity = isFront ? 1 : 0.6;
     const blur = isFront ? 'blur(0px)' : 'blur(4px)';
@@ -321,15 +321,15 @@ const BrowseByBodyType = ({ onCategoryClick }: { onCategoryClick: (category: str
 
   return (
     <div className="text-center mb-24 overflow-hidden py-10">
-      <h2 className="text-[24px] font-bold text-slate-900 mb-12 tracking-tight">Browse by body type</h2>
+      <h2 className="text-3xl font-bold text-slate-900 mb-12 tracking-tight">Browse by body type</h2>
       <div 
-        className="relative h-[300px] w-full max-w-[1000px] mx-auto perspective-1000"
+        className="relative h-[360px] w-full max-w-[1000px] mx-auto perspective-1000"
         style={{ perspective: '1000px' }}
       >
         {bodyTypes.map((type, i) => (
           <div 
             key={i} 
-            className="absolute left-1/2 top-0 light-glass-card rounded-2xl w-[240px] h-[240px] p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-white/80"
+            className="absolute left-1/2 top-0 light-glass-card rounded-2xl w-[288px] h-[288px] p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-white/80"
             style={getCardStyle(i)}
             onClick={() => {
               if (activeIndex === i) {
@@ -348,7 +348,7 @@ const BrowseByBodyType = ({ onCategoryClick }: { onCategoryClick: (category: str
               }
             }}
           >
-            <div className="h-36 w-full flex items-center justify-center mb-3">
+            <div className="h-[172px] w-full flex items-center justify-center mb-3">
                <img src={type.image} alt={type.name} className="w-full h-full object-contain" />
             </div>
             <span className="text-[16px] font-bold text-slate-800">{type.name}</span>
@@ -374,17 +374,17 @@ const BrowseByBodyType = ({ onCategoryClick }: { onCategoryClick: (category: str
 
 const ResearchAndReviews = () => {
   const reviews = [
-    { title: "2026 Cadillac Escalade Review", rating: "7.7/10", img: "https://images.unsplash.com/photo-1606841362432-841f3918a6e9?auto=format&fit=crop&w=600&q=80" },
-    { title: "2026 Dodge Durango Review", rating: "6.5/10", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80" },
-    { title: "2026 Lexus LX Hybrid Review", rating: "6.8/10", img: "https://images.unsplash.com/photo-1614026480209-cd9934144671?auto=format&fit=crop&w=600&q=80" },
-    { title: "2026 Hyundai Venue Review", rating: "5.2/10", img: "https://images.unsplash.com/photo-1550262141-8631bc0cb67f?auto=format&fit=crop&w=600&q=80" },
+    { title: "2026 Cadillac Escalade Review", rating: "7.7/10", img: "https://images.unsplash.com/photo-1606841362432-841f3918a6e9?auto=format&fit=crop&w=600&q=80", url: "https://www.caranddriver.com/cadillac/escalade" },
+    { title: "2026 Dodge Durango Review", rating: "6.5/10", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80", url: "https://www.caranddriver.com/dodge/durango" },
+    { title: "2026 Lexus LX Hybrid Review", rating: "6.8/10", img: "https://images.unsplash.com/photo-1614026480209-cd9934144671?auto=format&fit=crop&w=600&q=80", url: "https://www.caranddriver.com/lexus/lx" },
+    { title: "2026 Hyundai Venue Review", rating: "5.2/10", img: "https://images.unsplash.com/photo-1550262141-8631bc0cb67f?auto=format&fit=crop&w=600&q=80", url: "https://www.caranddriver.com/hyundai/venue" },
   ];
   
   const guides = [
-    { title: "The Best Gas Mileage Trucks of 2026", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80" },
-    { title: "The Best Cars for Remote Work in 2026", img: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=600&q=80" },
-    { title: "Toyota Avalon Buying Guide", img: "https://image.pollinations.ai/prompt/Toyota%20Avalon%20sedan%20cinematic%20photography?width=600&height=400&nologo=true" },
-    { title: "Toyota 4-Runner Buying Guide", img: "https://image.pollinations.ai/prompt/Toyota%204Runner%20SUV%20offroad%20cinematic%20photography?width=600&height=400&nologo=true" },
+    { title: "The Best Gas Mileage Trucks of 2026", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80", url: "https://www.edmunds.com/car-reviews/" },
+    { title: "The Best Cars for Remote Work in 2026", img: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=600&q=80", url: "https://www.edmunds.com/car-reviews/" },
+    { title: "Toyota Avalon Buying Guide", img: "https://image.pollinations.ai/prompt/Toyota%20Avalon%20sedan%20cinematic%20photography?width=600&height=400&nologo=true", url: "https://www.edmunds.com/toyota/avalon/" },
+    { title: "Toyota 4-Runner Buying Guide", img: "https://image.pollinations.ai/prompt/Toyota%204Runner%20SUV%20offroad%20cinematic%20photography?width=600&height=400&nologo=true", url: "https://www.edmunds.com/toyota/4runner/" },
   ];
 
   const CardSlider = ({ title, items, isReview = false }: { title: string, items: any[], isReview?: boolean }) => (
@@ -395,7 +395,7 @@ const ResearchAndReviews = () => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {items.map((item, idx) => (
-          <div key={idx} className="cursor-pointer group light-glass rounded-[16px] p-2 hover:bg-white/80 transition-all">
+          <a key={idx} href={item.url || "#"} target="_blank" rel="noopener noreferrer" className="block cursor-pointer group light-glass rounded-[16px] p-2 hover:bg-white/80 transition-all">
             <div className="rounded-[12px] overflow-hidden mb-3 h-[140px] relative">
               <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             </div>
@@ -408,7 +408,7 @@ const ResearchAndReviews = () => {
               <div className="mb-1 px-1 text-[10px] font-bold text-slate-900">Expert guide</div>
             )}
             <h4 className="font-bold px-1 text-[13px] text-slate-900 leading-[1.3] group-hover:underline underline-offset-2 decoration-[1.5px]">{item.title}</h4>
-          </div>
+          </a>
         ))}
       </div>
     </div>
@@ -426,124 +426,9 @@ const ResearchAndReviews = () => {
   );
 }
 
-const BottomSearch = ({ onSearch }: { onSearch: (filters: any) => void }) => {
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSearch = async (text: string) => {
-    const promptText = text.trim();
-    if (!promptText) return;
-    setLoading(true);
-    try {
-      // In Vite, env vars are exposed via import.meta.env
-      // @ts-ignore
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined);
-      
-      if (!apiKey) {
-        console.warn("No Gemini API key found, please configure it.");
-      }
 
-      const ai = new GoogleGenAI({ apiKey: apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: `Analyze this user's car search request: "${promptText}". Extract the constraints and return suggested car attributes as JSON.`,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              make: { type: Type.STRING, description: "Suggested car make (e.g. Toyota)" },
-              model: { type: Type.STRING, description: "Suggested car model (e.g. Camry)" },
-              bodyType: { type: Type.STRING, description: "e.g. SUV, Sedan, Pickup Truck, Coupe, Hatchback" },
-              fuelType: { type: Type.STRING, description: "e.g. Gas, Electric, Hybrid" },
-              maxPrice: { type: Type.INTEGER, description: "Maximum price in dollars if specified" },
-              searchTerm: { type: Type.STRING, description: "A general search keyword if make/model aren't specific enough" },
-              reason: { type: Type.STRING, description: "Brief friendly explanation of why you selected these filters based on their prompt" }
-            },
-            required: ["reason"]
-          } as Schema
-        }
-      });
-
-      const result = JSON.parse(response.text);
-      onSearch({
-        make: result.make || '',
-        model: result.model || '',
-        bodyTypes: result.bodyType ? [result.bodyType] : [],
-        fuelTypes: result.fuelType ? [result.fuelType] : [],
-        maxPrice: result.maxPrice || 100000,
-        searchTerm: result.searchTerm || '',
-        aiReasoning: result.reason
-      });
-    } catch (error) {
-      console.error("Bottom AI Search Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch(query);
-    }
-  };
-
-  return (
-    <div className="bg-transparent py-16 px-4">
-      <div className="max-w-[800px] mx-auto text-center light-glass-card rounded-[40px] py-16 px-8">
-        <h2 className="text-[28px] font-extrabold text-slate-900 mb-2 tracking-tight">Search for our best deals</h2>
-        <p className="text-slate-600 font-semibold mb-8 text-[13px]">Our AI powered tool can find the needle in the haystack.</p>
-        
-        <div className="flex items-center light-glass rounded-full px-3 py-1.5 w-full max-w-[600px] mx-auto mb-8 shadow-sm focus-within:ring-4 focus-within:ring-[#29abe2]/20 transition-all">
-          <input 
-            type="text" 
-            placeholder={loading ? "Thinking..." : "Ask anything or try a suggestion below..."} 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={loading}
-            className="flex-1 outline-none bg-transparent text-slate-900 text-[13px] font-bold placeholder:font-medium placeholder:text-slate-500 h-8 ml-3 disabled:opacity-50"
-          />
-          <button 
-            type="button"
-            onClick={() => handleSearch(query)}
-            disabled={loading || !query.trim()}
-            className="text-slate-500 bg-white/50 hover:bg-white transition-colors cursor-pointer p-1.5 rounded-lg mr-0.5 disabled:opacity-55"
-          >
-            {loading ? (
-              <RefreshCw size={16} className="animate-spin text-[#29abe2]" />
-            ) : (
-              <ArrowUpRight size={16} strokeWidth={1}/>
-            )}
-          </button>
-        </div>
-        
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            { text: "Great deals under $10,000", icon: "🚙" },
-            { text: "Budget friendly low mileage", icon: "🪙" },
-            { text: "Three rows under $30,000", icon: "🚗" }
-          ].map((chip, idx) => (
-            <button 
-              key={idx} 
-              type="button"
-              disabled={loading}
-              onClick={() => {
-                setQuery(chip.text);
-                handleSearch(chip.text);
-              }}
-              className="light-glass text-slate-900 rounded-full px-4 py-2 text-[11px] font-bold hover:bg-white/80 transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
-            >
-              <span className="opacity-90">{chip.icon}</span> {chip.text}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding') => void }) => (
+const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding' | 'finance') => void }) => (
   <footer className="bg-[#000000] pt-16 mt-auto">
     <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       <div className="flex flex-col md:flex-row justify-between items-start gap-12">
@@ -562,8 +447,9 @@ const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' 
           <div>
             <h4 className="text-white font-bold text-[15px] mb-4">Products</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">Used</a></li>
+              <li><button onClick={() => onNavigate('search')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Used Cars for Sale</button></li>
               <li><a href="#" className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">New</a></li>
+              <li><button onClick={() => onNavigate('finance')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Finance</button></li>
               <li><button onClick={() => onNavigate('sell')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Sell Your Car</button></li>
             </ul>
           </div>
@@ -579,7 +465,6 @@ const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' 
           <div>
             <h4 className="text-white font-bold text-[15px] mb-4">Resources</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">Blog</a></li>
               <li><button onClick={() => onNavigate('faq')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">FAQ</button></li>
               <li><button onClick={() => onNavigate('contact')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium">Contact Us</button></li>
               <li><button onClick={() => onNavigate('market_pulse')} className="text-slate-400 hover:text-white transition-colors text-[13px] font-medium text-left">Market Pulse</button></li>
@@ -608,7 +493,7 @@ const Footer = ({ onNavigate }: { onNavigate: (path: 'home' | 'search' | 'sell' 
 );
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding'>('home');
+  const [currentPath, setCurrentPath] = useState<'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding' | 'finance'>('home');
   const [selectedVehicle, setSelectedVehicle] = useState<MarketCheckCar | null>(null);
   const [session, setSession] = useState<any>(null);
   const [signupEmail, setSignupEmail] = useState<string>('');
@@ -635,7 +520,7 @@ export default function App() {
   };
 
   // Protected route logic
-  const navigateTo = (path: 'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding') => {
+  const navigateTo = (path: 'home' | 'search' | 'sell' | 'vehicle_detail' | 'signin' | 'signup' | 'dashboard' | 'vision' | 'team' | 'press' | 'pr' | 'faq' | 'contact' | 'dealers' | 'influencers' | 'market_pulse' | 'admin_onboarding' | 'finance') => {
     const protectedPaths = ['dashboard'];
     if (protectedPaths.includes(path) && !session) {
       setCurrentPath('signin');
@@ -653,6 +538,7 @@ export default function App() {
         onSignInClick={() => navigateTo('signin')}
         onDashboardClick={() => navigateTo('dashboard')}
         onMarketPulseClick={() => navigateTo('market_pulse')}
+        onFinanceClick={() => navigateTo('finance')}
         session={session}
       />
       
@@ -716,6 +602,8 @@ export default function App() {
           <MarketPulsePage onBack={() => navigateTo('home')} />
         ) : currentPath === 'admin_onboarding' ? (
           <OnboardingPage />
+        ) : currentPath === 'finance' ? (
+          <FinancePage />
         ) : (
           <>
             <HeroSearch 
@@ -743,12 +631,11 @@ export default function App() {
             <ResearchAndReviews />
           </main>
           
-          <BottomSearch 
-            onSearch={(filters) => {
-              setSearchFilters(filters);
-              navigateTo('search');
-            }} 
-          />
+
+          
+          <LatestArticles />
+          <ExpertAdviceFeeds />
+          <FeaturedInfluencerFeeds />
         </>
       )}
       </div>
